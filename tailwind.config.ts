@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				maze: {
+					bg: '#1A1F2C',
+					wall: '#403E43',
+					path: '#221F26',
+					player: '#8B5CF6',
+					exit: '#0EA5E9',
+					item: '#D946EF',
+					light: '#D3E4FD'
 				}
 			},
 			borderRadius: {
@@ -84,11 +94,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-light': {
+					'0%, 100%': {
+						opacity: '0.8',
+						transform: 'scale(1)'
+					},
+					'50%': {
+						opacity: '0.5',
+						transform: 'scale(0.95)'
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0)'
+					},
+					'50%': {
+						transform: 'translateY(-5px)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-light': 'pulse-light 3s ease-in-out infinite',
+				'float': 'float 2s ease-in-out infinite'
 			}
 		}
 	},
