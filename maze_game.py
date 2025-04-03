@@ -54,35 +54,52 @@ for _ in range(5):
             items.append([x, y])
             break
 
+# Function to reset the game
+def reset_game():
+    global maze, player_pos, items, score
+    maze = generate_maze()
+    player_pos = [0, 1]
+    items = []
+    for _ in range(5):
+        while True:
+            x, y = random.randint(1, COLS-2), random.randint(1, ROWS-2)
+            if maze[y][x] == 0 and [x, y] != player_pos and [x, y] not in items:
+                items.append([x, y])
+                break
+    score = 0
+
 # Game loop
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
+    # Handle key presses - using get_pressed for more responsive controls
+    keys = pygame.key.get_pressed()
+    
+    # Player movement (limit movement rate with a small delay)
+    x, y = player_pos
+    if keys[pygame.K_UP] and y > 0 and maze[y-1][x] == 0:
+        player_pos[1] -= 1
+    elif keys[pygame.K_DOWN] and y < ROWS-1 and maze[y+1][x] == 0:
+        player_pos[1] += 1
+    elif keys[pygame.K_LEFT] and x > 0 and maze[y][x-1] == 0:
+        player_pos[0] -= 1
+    elif keys[pygame.K_RIGHT] and x < COLS-1 and maze[y][x+1] == 0:
+        player_pos[0] += 1
+        
+    # Special key handling for one-time actions - using event loop for toggle actions
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
         if event.type == pygame.KEYDOWN:
-            x, y = player_pos
-            if event.key == pygame.K_UP and y > 0 and maze[y-1][x] == 0:
-                player_pos[1] -= 1
-            elif event.key == pygame.K_DOWN and y < ROWS-1 and maze[y+1][x] == 0:
-                player_pos[1] += 1
-            elif event.key == pygame.K_LEFT and x > 0 and maze[y][x-1] == 0:
-                player_pos[0] -= 1
-            elif event.key == pygame.K_RIGHT and x < COLS-1 and maze[y][x+1] == 0:
-                player_pos[0] += 1
-            elif event.key == pygame.K_l:
+            if event.key == pygame.K_l:  # Toggle light
                 light_on = not light_on
-            elif event.key == pygame.K_r:
-                maze = generate_maze()
-                player_pos = [0, 1]
-                items = []
-                for _ in range(5):
-                    while True:
-                        x, y = random.randint(1, COLS-2), random.randint(1, ROWS-2)
-                        if maze[y][x] == 0 and [x, y] != player_pos and [x, y] not in items:
-                            items.append([x, y])
-                            break
-                score = 0
+                print("Light toggled:", "ON" if light_on else "OFF")  # Debug message
+            elif event.key == pygame.K_r:  # Reset game
+                reset_game()
+                print("Game reset")  # Debug message
     
     # Check if player collected an item
     if player_pos in items:
@@ -92,15 +109,7 @@ while running:
     # Check if player reached the exit
     if player_pos == [COLS-1, ROWS-2]:
         score += 50
-        maze = generate_maze()
-        player_pos = [0, 1]
-        items = []
-        for _ in range(5):
-            while True:
-                x, y = random.randint(1, COLS-2), random.randint(1, ROWS-2)
-                if maze[y][x] == 0 and [x, y] != player_pos and [x, y] not in items:
-                    items.append([x, y])
-                    break
+        reset_game()
     
     # Clear the screen
     screen.fill(BLACK)
@@ -160,9 +169,13 @@ while running:
     instructions = font.render("Arrow keys to move, L to toggle light, R to reset", True, WHITE)
     screen.blit(instructions, (20, SCREEN_HEIGHT - 40))
     
+    # Draw current light status
+    light_status = font.render(f"Light: {'ON' if light_on else 'OFF'}", True, WHITE)
+    screen.blit(light_status, (20, 60))
+    
     # Update the display
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(15)  # Lower FPS to make movement more manageable
 
 pygame.quit()
 sys.exit()
