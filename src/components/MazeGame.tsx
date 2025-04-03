@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { generateMaze, calculateLighting, Maze, MazeCell } from '@/utils/mazeGenerator';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/components/ui/use-toast';
 import MazeRenderer from '@/components/MazeRenderer';
 import GameUI from '@/components/GameUI';
 
